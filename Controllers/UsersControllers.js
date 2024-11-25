@@ -1,13 +1,15 @@
-const connection = require('../models/database');
-const db = require('../models/database');
-const bcrypt = require('bcryptjs');
 
-exports.login = async (req, res) => {
+// Esto es para manejar las peticiones de la ruta
+
+// Conectamos a la base de datos para usarla en los controladores
+const conexion = require("../Models/Database.js")
+
+loginUser = async (req, res) => {
     const { username, password } = req.body;
     const query = 'SELECT * FROM `usuarios` WHERE username =?;';
 
     // Verificar las credenciales de un usuario y responde en consecuencia.
-    db.query(query, [username], async (err, results) => {
+    conexion.query(query, [username], async (err, results) => {
         if (err) throw err;
 
         if (results.length > 0) {
@@ -26,7 +28,7 @@ exports.login = async (req, res) => {
     });
 }
 
-exports.register = async (req, res) => {
+registrarUser = async (req, res) => {
     const { username, correo, password, rol } = req.body
 
     //Encriptar la contraseña antes de almacenarla en la base de datos
@@ -35,7 +37,7 @@ exports.register = async (req, res) => {
     const query = 'INSERT INTO `usuarios` (username, correo, password, rol) VALUES (?,?,?,?);'
 
     //Crear un nuevo usuario y responde en consecuencia.
-    db.query(query, [username, correo, passSecret, rol], (err, results) => {
+    conexion.query(query, [username, correo, passSecret, rol], (err, results) => {
         if (err) throw err;
         res.json({
             message: "Registro Exitoso",
@@ -44,11 +46,11 @@ exports.register = async (req, res) => {
     })
 }
 
-exports.allUsers = (req, res) => {
+obtenerUsuarios = (req, res) => {
     //Llammar a todos los usuarios existentes
     const query = 'SELECT * FROM `usuarios`;'
 
-    db.query(query, (err, results) => {
+    conexion.query(query, (err, results) => {
         if (err) throw err;
         res.json({
             message: "Aqui estan todos los usuarios existentes",
@@ -57,13 +59,13 @@ exports.allUsers = (req, res) => {
     })
 }
 
-exports.usersByRol = (req, res) => {
+usuariosPorRol = (req, res) => {
     const { rol } = req.params
 
     //Llamar a todos los usuarios con un rol específico
     const query = 'SELECT * FROM `usuarios` WHERE rol=?;'
 
-    db.query(query, [rol], (err, results) => {
+    conexion.query(query, [rol], (err, results) => {
         if (err) throw err;
         res.json({
             message: "Aqui estan todos los usuarios con el rol especificado",
@@ -72,17 +74,26 @@ exports.usersByRol = (req, res) => {
     })
 }
 
-exports.updateUser = (req, res) => {
+actualizarUser = (req, res) => {
     const { id } = req.params
     const { username, correo, password, rol } = req.body
 
     const query = 'UPDATE `usuarios` SET username=?, correo=?, password=?, rol=? WHERE id=?;'
 
-    db.query(query, [username, correo, password, rol, id], (err, results) => {
+    conexion.query(query, [username, correo, password, rol, id], (err, results) => {
         if (err) throw err;
         res.json({
             message: "El usuario fue actualizado",
             data: results
         })
     })
+}
+
+module.exports = {
+    loginUser,
+    registrarUser,
+    obtenerUsuarios,
+    usuariosPorRol,
+    borrarUser,
+    actualizarUser
 }

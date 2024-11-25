@@ -1,24 +1,27 @@
+
+// Usaremos Express para crear el servicio controlador
+// Necesitaremos las Rutas (EndPoints)
 const express = require('express');
-const router = express.Router();
-const usersController = require('../controllers/usersControllers')
+const rutas = express.Router(); // Creamos un objeto especifico para las rutas
 
 //Servicios:
 //Login, register, lista de usuarios
 
 //Ruta de login
 
-router.post('/login', usersController.login)
+rutas.post('/login', usersController.login)
 
 //Ruta de registro
-router.post('/register', usersController.register)
+rutas.post('/register', usersController.register)
 
 //Ruta para obtener la lista de usuarios
-router.get('/all_users', usersController.allUsers)
+rutas.get('/all_users', usersController.allUsers)
 
 //Ruta para obtener la lista de los usuarios por rol
-router.get('/users_por_rol/:rol', usersController.usersByRol)
+rutas.get('/users_por_rol/:rol', usersController.usersByRol)
 
 //Ruta para actualizar los usuarios
-router.put('/update_user/:id', usersController.updateUser)
+rutas.put('/update_user/:id', usersController.updateUser)
 
-module.exports = router;
+// Exportaremos el objeto para que se use en otros archivos
+module.exports = rutas;
