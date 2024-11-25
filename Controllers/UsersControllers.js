@@ -3,6 +3,8 @@
 
 // Conectamos a la base de datos para usarla en los controladores
 const conexion = require("../Models/Database.js")
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -19,6 +21,7 @@ loginUser = async (req, res) => {
             if (isMatch) {
                 res.json({ message: "Login Exitoso", data: results });
                 // Generar un token aquí
+                const token = generarToken(user)//Se le pasan los datos del usuario
             } else {
                 res.json({ message: "Usuario o contraseña incorrectos", data: [] });
             }
@@ -26,6 +29,19 @@ loginUser = async (req, res) => {
             res.json({ message: "Usuario o contraseña incorrectos", data: [] });
         }
     });
+}
+
+//Funcion para generar el token
+function generarToken() {
+    const password = "12345";
+    const dataUser = {
+        id: user.id,
+        username: user.username,
+        correo: user.correo,
+        rol: user.rol
+    }
+    const token = jwt.sign(dataUser, password, { expiresIn: '1h' });
+    return token;
 }
 
 registrarUser = async (req, res) => {
