@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 loginUser = async (req, res) => {
     const { username, password } = req.body;
-    const query = 'SELECT * FROM `usuarios` WHERE username =?;';
+    const query = 'SELECT * FROM `Users` WHERE Username =?;';
 
     // Verificar las credenciales de un usuario y responde en consecuencia.
     conexion.query(query, [username], async (err, results) => {
@@ -50,7 +50,7 @@ registrarUser = async (req, res) => {
     //Encriptar la contraseña antes de almacenarla en la base de datos
     const passSecret = await bcrypt.hash(password, 10);
 
-    const query = 'INSERT INTO `usuarios` (username, correo, password, rol) VALUES (?,?,?,?);'
+    const query = 'INSERT INTO `Users` (Username, Email, Password, Rol) VALUES (?,?,?,?);'
 
     //Crear un nuevo usuario y responde en consecuencia.
     conexion.query(query, [username, correo, passSecret, rol], (err, results) => {
@@ -64,7 +64,7 @@ registrarUser = async (req, res) => {
 
 obtenerUsuarios = (req, res) => {
     //Llammar a todos los usuarios existentes
-    const query = 'SELECT * FROM `usuarios`;'
+    const query = 'SELECT * FROM `Users`;'
 
     conexion.query(query, (err, results) => {
         if (err) throw err;
@@ -79,7 +79,7 @@ usuariosPorRol = (req, res) => {
     const { rol } = req.params
 
     //Llamar a todos los usuarios con un rol específico
-    const query = 'SELECT * FROM `usuarios` WHERE rol=?;'
+    const query = 'SELECT * FROM `Users` WHERE Rol=?;'
 
     conexion.query(query, [rol], (err, results) => {
         if (err) throw err;
@@ -92,9 +92,9 @@ usuariosPorRol = (req, res) => {
 
 actualizarUser = (req, res) => {
     const { id } = req.params
-    const { username, correo, password, rol } = req.body
+    const { Username, correo, password, rol } = req.body
 
-    const query = 'UPDATE `usuarios` SET username=?, correo=?, password=?, rol=? WHERE id=?;'
+    const query = 'UPDATE `Users` SET Username=?, Email=?, Password=?, Rol=? WHERE ID_Usuarios=?;'
 
     conexion.query(query, [username, correo, password, rol, id], (err, results) => {
         if (err) throw err;
@@ -110,6 +110,5 @@ module.exports = {
     registrarUser,
     obtenerUsuarios,
     usuariosPorRol,
-    borrarUser,
     actualizarUser
 }
