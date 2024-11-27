@@ -20,12 +20,23 @@ loginUser = async (req, res) => {
 
             if (isMatch) {
                 res.json({ message: "Login Exitoso", data: results });
+
                 // Generar un token aquí
                 const token = generarToken(user)//Se le pasan los datos del usuario
+                //Almacenar el token en una cookie
+
+                /*Opcion 1.- El seridor almacena el token en una cookie*/
+                res.cookie('token: ', token, {httpOnly:true,secure:false,maxAge:60000});
+                
+                /*Opcion 2.- El servidor devielve el token y la aplicacion cliente lo almacena*/
+                res.json({ token });
+
             } else {
+
                 res.json({ message: "Usuario o contraseña incorrectos", data: [] });
             }
         } else {
+            
             res.json({ message: "Usuario o contraseña incorrectos", data: [] });
         }
     });
@@ -92,7 +103,7 @@ usuariosPorRol = (req, res) => {
 
 actualizarUser = (req, res) => {
     const { id } = req.params
-    const { Username, correo, password, rol } = req.body
+    const { username, correo, password, rol } = req.body
 
     const query = 'UPDATE `Users` SET Username=?, Email=?, Password=?, Rol=? WHERE ID_Usuarios=?;'
 
